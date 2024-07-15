@@ -1,13 +1,13 @@
-package subway.line.exception;
+package subway.common.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum LineExceptionType {
+public enum ApplicationExceptionType {
 
-    LINE_NOT_FOUND("400", "Entity Not Found");
+    INTERNAL_SERVER_ERROR("500", "Server Error");
 
     private final String code;
     private final String message;
