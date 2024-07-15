@@ -34,12 +34,6 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    public StationResponse findStation(Long stationId) {
-        Station station = findById(stationId);
-
-        return createStationResponse(station);
-    }
-
     private Station findById(Long stationId) {
         return stationRepository.findById(stationId)
             .orElseThrow(() -> new StationException(StationExceptionType.STATION_NOT_FOUND));
