@@ -140,11 +140,10 @@ public class LineAcceptanceTest {
         //given
         Long 신사역 = 지하철역_생성("신사역");
         Long 논현역 = 지하철역_생성("논현역");
-        String id = 지하철노선_생성(createParams("신분당선", "bg-red-600", 신사역, 논현역, 10L))
-            .jsonPath().getString("id");
+        String location = 지하철노선_생성(createParams("신분당선", "bg-red-600", 신사역, 논현역, 10L)).header("Location");
 
         //when
-        ExtractableResponse<Response> response = 지하철노선_삭제(id);
+        ExtractableResponse<Response> response = 지하철노선_삭제(location);
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
@@ -234,9 +233,9 @@ public class LineAcceptanceTest {
         return response;
     }
 
-    private static ExtractableResponse<Response> 지하철노선_삭제(String id) {
+    private static ExtractableResponse<Response> 지하철노선_삭제(String location) {
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-            .when().delete("/lines/" + id)
+            .when().delete(location)
             .then().log().all()
             .extract();
         return response;

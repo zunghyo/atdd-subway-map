@@ -68,12 +68,10 @@ public class StationAcceptanceTest {
     @Test
     void deleteStation() {
         // given
-        ExtractableResponse<Response> response = 지하철역_생성("강남역");
+        String location = 지하철역_생성("강남역").header("Location");
 
         // when
-        String location = response.header("Location");
-        String stationId = location.substring(location.lastIndexOf("/") + 1);
-        지하철역_삭제(stationId);
+        지하철역_삭제(location);
 
         // then
         List<String> stationNames = 지하철역_목록조회();
@@ -105,12 +103,11 @@ public class StationAcceptanceTest {
             .extract().jsonPath().getList("name", String.class);
     }
 
-    private void 지하철역_삭제(String stationId) {
+    private void 지하철역_삭제(String location) {
         RestAssured.given().log().all()
-            .when().delete("/stations/" + stationId)
+            .when().delete(location)
             .then().log().all()
             .statusCode(HttpStatus.NO_CONTENT.value());
     }
-
 
 }
