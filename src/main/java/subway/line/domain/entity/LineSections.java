@@ -32,6 +32,16 @@ public class LineSections {
         lineSections.add(lineSection);
     }
 
+    public void deleteSection(Long stationId) {
+        if(lineSections.size() <= 1) {
+            throw new LineException(LineExceptionType.CANNOT_DELETE_SINGLE_SECTION);
+        }
+        if(!getLastSection().getDownStation().getId().equals(stationId)) {
+            throw new LineException(LineExceptionType.CANNOT_DELETE_NON_LAST_DOWN_STATION);
+        }
+        lineSections.remove(lineSections.size() - 1);
+    }
+
     public List<Long> getStationIds() {
         return lineSections.stream()
             .flatMap(lineSection -> Stream.of(
@@ -57,5 +67,4 @@ public class LineSections {
             throw new LineException(LineExceptionType.INVALID_DOWN_STATION);
         }
     }
-
 }

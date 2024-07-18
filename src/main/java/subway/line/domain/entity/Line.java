@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import subway.station.domain.Station;
 
 @Entity
 @Getter
@@ -39,5 +40,9 @@ public class Line {
 
     public void addSection(LineSection lineSection) {
         lineSections.addSection(lineSection);
+    }
+
+    public void deleteSection(Long stationId) {
+        lineSections.deleteSection(stationId);
     }
 }

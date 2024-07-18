@@ -32,6 +32,14 @@ public class LineSectionService {
         line.addSection(new LineSection(upStation, downStation, sectionRequest.getDistance()));
     }
 
+    @Transactional
+    public void deleteSection(Long lineId, Long stationId) {
+        Line line = findLineById(lineId);
+        Station station = findStationById(stationId);
+
+        line.deleteSection(station.getId());
+    }
+
     private Station findStationById(Long stationId) {
         return stationRepository.findById(stationId)
             .orElseThrow(() -> new StationException(StationExceptionType.STATION_NOT_FOUND));
@@ -41,6 +49,5 @@ public class LineSectionService {
         return lineRepository.findById(lineId)
             .orElseThrow(() -> new LineException(LineExceptionType.LINE_NOT_FOUND));
     }
-
 
 }

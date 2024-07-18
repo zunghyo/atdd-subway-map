@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class SectionUtils {
@@ -16,6 +17,13 @@ public class SectionUtils {
             .body(params)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when().post("/lines/" + id + "/sections")
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철구간_삭제(Long lineId, Long stationId) {
+        return RestAssured.given().log().all()
+            .when().delete("/lines/" + lineId + "/sections?stationId=" + stationId)
             .then().log().all()
             .extract();
     }
