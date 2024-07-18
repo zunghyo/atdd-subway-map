@@ -33,7 +33,7 @@ public class LineService {
     public LineResponse saveLine(LineRequest lineRequest) {
 
         Line line = lineRepository.save(new Line(lineRequest.getName(), lineRequest.getColor(), new LineSections()));
-        LineSection lineSection = new LineSection(findStationById(lineRequest.getUpStationId()), findStationById(lineRequest.getDownStationId()), lineRequest.getDistance());
+        LineSection lineSection = new LineSection(stationRepository.findByIdOrThrow(lineRequest.getUpStationId()), stationRepository.findByIdOrThrow(lineRequest.getDownStationId()), lineRequest.getDistance());
 
         line.getLineSections().addSection(lineSection);
 
@@ -51,7 +51,7 @@ public class LineService {
     }
 
     public LineResponse findLine(Long lineId) {
-        Line line = findLineById(lineId);
+        Line line = lineRepository.findByIdOrThrow(lineId);
 
         List<Long> stationIds = line.getLineSections().getStationIds();
         List<StationResponse> stations = getStationResponsesByStationIds(stationIds);
@@ -61,24 +61,14 @@ public class LineService {
 
     @Transactional
     public void updateLine(Long lineId, LineRequest lineRequest) {
-        Line line = findLineById(lineId);
+        Line line = lineRepository.findByIdOrThrow(lineId);
         line.update(lineRequest.getName(), lineRequest.getColor());
     }
 
     @Transactional
     public void deleteLine(Long lineId) {
-        Line line = findLineById(lineId);
+        Line line = lineRepository.findByIdOrThrow(lineId);
         lineRepository.delete(line);
-    }
-
-    private Station findStationById(Long stationId) {
-        return stationRepository.findById(stationId)
-            .orElseThrow(() -> new StationException(StationExceptionType.STATION_NOT_FOUND));
-    }
-
-    private Line findLineById(Long lineId) {
-        return lineRepository.findById(lineId)
-            .orElseThrow(() -> new LineException(LineExceptionType.LINE_NOT_FOUND));
     }
 
     private LineResponse createLineResponse(Line line, List<StationResponse> stations) {

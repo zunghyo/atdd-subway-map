@@ -24,30 +24,20 @@ public class LineSectionService {
 
     @Transactional
     public void saveSection(Long lineId, SectionRequest sectionRequest) {
-        Line line = findLineById(lineId);
+        Line line = lineRepository.findByIdOrThrow(lineId);
 
-        Station upStation = findStationById(sectionRequest.getUpStationId());
-        Station downStation = findStationById(sectionRequest.getDownStationId());
+        Station upStation = stationRepository.findByIdOrThrow(sectionRequest.getUpStationId());
+        Station downStation = stationRepository.findByIdOrThrow(sectionRequest.getDownStationId());
 
         line.addSection(new LineSection(upStation, downStation, sectionRequest.getDistance()));
     }
 
     @Transactional
     public void deleteSection(Long lineId, Long stationId) {
-        Line line = findLineById(lineId);
-        Station station = findStationById(stationId);
+        Line line = lineRepository.findByIdOrThrow(lineId);
+        Station station = stationRepository.findByIdOrThrow(stationId);
 
         line.deleteSection(station.getId());
-    }
-
-    private Station findStationById(Long stationId) {
-        return stationRepository.findById(stationId)
-            .orElseThrow(() -> new StationException(StationExceptionType.STATION_NOT_FOUND));
-    }
-
-    private Line findLineById(Long lineId) {
-        return lineRepository.findById(lineId)
-            .orElseThrow(() -> new LineException(LineExceptionType.LINE_NOT_FOUND));
     }
 
 }
