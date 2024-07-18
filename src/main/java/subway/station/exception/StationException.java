@@ -1,5 +1,8 @@
 package subway.station.exception;
 
+import lombok.Getter;
+
+@Getter
 public class StationException extends RuntimeException {
     private final StationExceptionType stationExceptionType;
 

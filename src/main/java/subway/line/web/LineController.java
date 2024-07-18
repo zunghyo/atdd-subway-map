@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import subway.line.application.LineSectionService;
 import subway.line.application.LineService;
 import subway.line.application.dto.LineRequest;
 import subway.line.application.dto.LineResponse;
+import subway.line.application.dto.SectionRequest;
 
 @RestController
 @RequestMapping("/lines")
@@ -22,6 +24,7 @@ import subway.line.application.dto.LineResponse;
 public class LineController {
 
     private LineService lineService;
+    private LineSectionService lineSectionService;
 
     @PostMapping
     public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
@@ -43,9 +46,16 @@ public class LineController {
     public void updateLine(@PathVariable Long lineId, @RequestBody LineRequest lineRequest) {
         lineService.updateLine(lineId, lineRequest);
     }
+
     @DeleteMapping("/{lineId}")
     public ResponseEntity<Void> deleteLine(@PathVariable Long lineId) {
         lineService.deleteLine(lineId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{lineId}/sections")
+    public ResponseEntity<Void> createSection(@PathVariable Long lineId, @RequestBody SectionRequest sectionRequest) {
+        lineSectionService.saveSection(lineId, sectionRequest);
+        return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }
 }

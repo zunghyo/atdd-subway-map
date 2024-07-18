@@ -1,6 +1,7 @@
-package subway.line.domain;
+package subway.line.domain.entity;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -15,24 +16,28 @@ public class Line {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(length = 20, nullable = false)
     private String name;
+
     @Column(length = 20, nullable = false)
     private String color;
-    private Long upStationId;
-    private Long downStationId;
-    private Long distance;
 
-    public Line(String name, String color, Long upStationId, Long downStationId, Long distance) {
+    @Embedded
+    private LineSections lineSections;
+
+    public Line(String name, String color, LineSections lineSections) {
         this.name = name;
         this.color = color;
-        this.upStationId = upStationId;
-        this.downStationId = downStationId;
-        this.distance = distance;
+        this.lineSections = lineSections;
     }
 
     public void update(String name, String color) {
         this.name = name;
         this.color = color;
+    }
+
+    public void addSection(LineSection lineSection) {
+        lineSections.addSection(lineSection);
     }
 }
