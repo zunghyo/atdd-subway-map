@@ -8,7 +8,6 @@ import java.util.stream.Stream;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,8 +22,7 @@ import subway.station.domain.Station;
 @NoArgsConstructor
 public class LineSections {
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    @JoinColumn(name = "line_id")
+    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY, orphanRemoval = true)
     private final List<LineSection> lineSections = new ArrayList<>();
 
     public void addSection(LineSection lineSection) {
