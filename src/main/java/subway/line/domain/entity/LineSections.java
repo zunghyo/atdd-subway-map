@@ -12,8 +12,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import subway.line.exception.LineException;
-import subway.line.exception.LineExceptionType;
+import subway.common.exception.SubwayException;
+import subway.common.exception.SubwayExceptionType;
+import subway.line.exception.InvalidDownStationException;
+import subway.line.exception.InvalidUpStationException;
 import subway.station.domain.Station;
 
 @Embeddable
@@ -35,11 +37,11 @@ public class LineSections {
 
     public void deleteSection(Long stationId) {
         if(lineSections.size() <= 1) {
-            throw new LineException(LineExceptionType.CANNOT_DELETE_SINGLE_SECTION);
+            throw new SubwayException(SubwayExceptionType.CANNOT_DELETE_SINGLE_SECTION);
         }
         Optional<Station> lastDownStation = getLastDownStation();
         if(lastDownStation.isPresent() && !lastDownStation.get().getId().equals(stationId)) {
-            throw new LineException(LineExceptionType.CANNOT_DELETE_NON_LAST_DOWN_STATION);
+            throw new SubwayException(SubwayExceptionType.CANNOT_DELETE_NON_LAST_DOWN_STATION);
         }
         lineSections.remove(lineSections.size() - 1);
     }
@@ -65,14 +67,14 @@ public class LineSections {
     private void validateUpStation(Station upStation) {
         Optional<Station> lastDownStation = getLastDownStation();
         if (lastDownStation.isPresent() && !lastDownStation.get().getId().equals(upStation.getId())) {
-            throw new LineException(LineExceptionType.INVALID_UP_STATION);
+            throw new InvalidUpStationException(upStation.getId());
         }
     }
 
     private void validateDownStation(Station downStation) {
         if (getStationIds().stream()
             .anyMatch(stationId -> stationId.equals(downStation.getId()))) {
-            throw new LineException(LineExceptionType.INVALID_DOWN_STATION);
+            throw new InvalidDownStationException(downStation.getId());
         }
     }
 }

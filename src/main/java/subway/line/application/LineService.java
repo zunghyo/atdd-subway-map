@@ -8,18 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.line.application.dto.LineRequest;
 import subway.line.application.dto.LineResponse;
-import subway.line.application.dto.SectionRequest;
 import subway.line.domain.entity.Line;
 import subway.line.domain.LineRepository;
 import subway.line.domain.entity.LineSection;
 import subway.line.domain.entity.LineSections;
-import subway.line.exception.LineException;
-import subway.line.exception.LineExceptionType;
 import subway.station.application.dto.StationResponse;
 import subway.station.domain.Station;
 import subway.station.domain.StationRepository;
-import subway.station.exception.StationException;
-import subway.station.exception.StationExceptionType;
 
 @Service
 @Transactional(readOnly = true)

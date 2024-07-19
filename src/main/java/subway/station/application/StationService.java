@@ -6,14 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.line.exception.LineException;
-import subway.line.exception.LineExceptionType;
 import subway.station.domain.Station;
 import subway.station.application.dto.StationRequest;
 import subway.station.application.dto.StationResponse;
 import subway.station.domain.StationRepository;
-import subway.station.exception.StationException;
-import subway.station.exception.StationExceptionType;
 
 @Service
 @Transactional(readOnly = true)

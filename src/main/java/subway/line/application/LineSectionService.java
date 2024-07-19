@@ -7,12 +7,8 @@ import subway.line.application.dto.SectionRequest;
 import subway.line.domain.LineRepository;
 import subway.line.domain.entity.Line;
 import subway.line.domain.entity.LineSection;
-import subway.line.exception.LineException;
-import subway.line.exception.LineExceptionType;
 import subway.station.domain.Station;
 import subway.station.domain.StationRepository;
-import subway.station.exception.StationException;
-import subway.station.exception.StationExceptionType;
 
 @Service
 @Transactional(readOnly = true)
