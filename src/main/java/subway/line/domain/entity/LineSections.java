@@ -2,6 +2,7 @@ package subway.line.domain.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.persistence.CascadeType;
@@ -36,7 +37,8 @@ public class LineSections {
         if(lineSections.size() <= 1) {
             throw new LineException(LineExceptionType.CANNOT_DELETE_SINGLE_SECTION);
         }
-        if(!getLastSection().getDownStation().getId().equals(stationId)) {
+        Optional<Station> lastDownStation = getLastDownStation();
+        if(lastDownStation.isPresent() && !lastDownStation.get().getId().equals(stationId)) {
             throw new LineException(LineExceptionType.CANNOT_DELETE_NON_LAST_DOWN_STATION);
         }
         lineSections.remove(lineSections.size() - 1);
@@ -51,12 +53,18 @@ public class LineSections {
             .collect(Collectors.toList());
     }
 
-    private LineSection getLastSection() {
-        return lineSections.isEmpty() ? null : lineSections.get(lineSections.size() - 1);
+    private Optional<LineSection> getLastLineSection() {
+        return lineSections.isEmpty() ? Optional.empty() : Optional.of(lineSections.get(lineSections.size() - 1));
+    }
+
+    private Optional<Station> getLastDownStation() {
+        Optional<LineSection> lastSection = getLastLineSection();
+        return lastSection.map(LineSection::getDownStation);
     }
 
     private void validateUpStation(Station upStation) {
-        if (!lineSections.isEmpty() && !getLastSection().getDownStation().getId().equals(upStation.getId())) {
+        Optional<Station> lastDownStation = getLastDownStation();
+        if (lastDownStation.isPresent() && !lastDownStation.get().getId().equals(upStation.getId())) {
             throw new LineException(LineExceptionType.INVALID_UP_STATION);
         }
     }
