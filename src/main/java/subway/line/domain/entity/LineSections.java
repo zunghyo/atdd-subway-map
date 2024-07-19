@@ -63,7 +63,7 @@ public class LineSections {
 
     private void validateDownStation(Station downStation) {
         if (getStationIds().stream()
-            .anyMatch(lineSectionId -> lineSectionId.equals(downStation.getId()))) {
+            .anyMatch(stationId -> stationId.equals(downStation.getId()))) {
             throw new LineException(LineExceptionType.INVALID_DOWN_STATION);
         }
     }
