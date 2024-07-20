@@ -1,7 +1,6 @@
 package subway.line.application;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,26 +31,21 @@ public class LineService {
 
         line.getLineSections().addSection(lineSection);
 
-        List<StationResponse> stations = getStationResponsesByStationIds(line.getLineSections().getStationIds());
-
-        return createLineResponse(line, stations);
+        return getLineResponseByLine(line);
     }
 
     public List<LineResponse> findAllLines() {
         List<Line> lines = lineRepository.findAll();
 
         return lines.stream()
-            .map(this::createGroupedLineResponse)
+            .map(this::getLineResponseByLine)
             .collect(Collectors.toList());
     }
 
     public LineResponse findLine(Long lineId) {
         Line line = lineRepository.findByIdOrThrow(lineId);
 
-        List<Long> stationIds = line.getLineSections().getStationIds();
-        List<StationResponse> stations = getStationResponsesByStationIds(stationIds);
-
-        return createLineResponse(line, stations);
+        return getLineResponseByLine(line);
     }
 
     @Transactional
@@ -66,6 +60,18 @@ public class LineService {
         lineRepository.delete(line);
     }
 
+    private LineResponse getLineResponseByLine(Line line) {
+        return createLineResponse(line, getStationResponsesByLine(line));
+    }
+
+    private List<StationResponse> getStationResponsesByLine(Line line) {
+        List<Station> stations = line.getLineSections().getStations();
+
+        return stations.stream()
+            .map(station -> new StationResponse(station.getId(), station.getName()))
+            .collect(Collectors.toList());
+    }
+
     private LineResponse createLineResponse(Line line, List<StationResponse> stations) {
         return new LineResponse(
             line.getId(),
@@ -73,24 +79,6 @@ public class LineService {
             line.getColor(),
             stations
         );
-    }
-
-    private LineResponse createGroupedLineResponse(Line line) {
-        List<Long> stationIds = line.getLineSections().getStationIds();
-        return createLineResponse(line, getStationResponsesByStationIds(stationIds));
-    }
-
-    private List<StationResponse> getStationResponsesByStationIds(Iterable<Long> stationIds) {
-        Map<String, Station> stationMap = stationRepository.findAllById(stationIds).stream()
-            .collect(Collectors.toMap(
-                Station::getName,
-                station -> station,
-                (existing, replacement) -> existing
-            ));
-
-        return stationMap.values().stream()
-            .map(station -> new StationResponse(station.getId(), station.getName()))
-            .collect(Collectors.toList());
     }
 
 }

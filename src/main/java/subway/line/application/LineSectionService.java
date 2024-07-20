@@ -33,7 +33,7 @@ public class LineSectionService {
         Line line = lineRepository.findByIdOrThrow(lineId);
         Station station = stationRepository.findByIdOrThrow(stationId);
 
-        line.deleteSection(station.getId());
+        line.deleteSection(station);
     }
 
 }

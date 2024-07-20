@@ -33,25 +33,25 @@ public class LineSections {
         lineSections.add(lineSection);
     }
 
-    public void deleteSection(Long stationId) {
+    public void deleteSection(Station station) {
         if(lineSections.size() <= 1) {
             throw new SubwayException(SubwayExceptionType.CANNOT_DELETE_SINGLE_SECTION);
         }
-        if(isDifferentFromLastDownStation(stationId)) {
+        if(isDifferentFromLastDownStation(station)) {
             throw new SubwayException(SubwayExceptionType.CANNOT_DELETE_NON_LAST_DOWN_STATION);
         }
         lineSections.remove(lineSections.size() - 1);
     }
 
     private void validateUpStation(Station upStation) {
-        if (isDifferentFromLastDownStation(upStation.getId())) {
+        if (isDifferentFromLastDownStation(upStation)) {
             throw new InvalidUpStationException(upStation.getId());
         }
     }
 
-    private boolean isDifferentFromLastDownStation(Long stationId) {
+    private boolean isDifferentFromLastDownStation(Station station) {
         Optional<Station> lastDownStation = getLastDownStation();
-        return lastDownStation.isPresent() && !lastDownStation.get().getId().equals(stationId);
+        return lastDownStation.isPresent() && !lastDownStation.get().equals(station);
     }
 
     private Optional<Station> getLastDownStation() {
@@ -64,17 +64,17 @@ public class LineSections {
     }
 
     private void validateDownStation(Station downStation) {
-        if (getStationIds().stream()
-            .anyMatch(stationId -> stationId.equals(downStation.getId()))) {
+        if (getStations().stream()
+            .anyMatch(station -> station.equals(downStation))) {
             throw new InvalidDownStationException(downStation.getId());
         }
     }
 
-    public List<Long> getStationIds() {
+    public List<Station> getStations() {
         return lineSections.stream()
             .flatMap(lineSection -> Stream.of(
-                lineSection.getUpStation().getId(),
-                lineSection.getDownStation().getId()))
+                lineSection.getUpStation(),
+                lineSection.getDownStation()))
             .distinct()
             .collect(Collectors.toList());
     }

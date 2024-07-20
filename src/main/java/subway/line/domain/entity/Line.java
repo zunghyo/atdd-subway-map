@@ -42,7 +42,7 @@ public class Line {
         lineSections.addSection(lineSection);
     }
 
-    public void deleteSection(Long stationId) {
-        lineSections.deleteSection(stationId);
+    public void deleteSection(Station station) {
+        lineSections.deleteSection(station);
     }
 }
