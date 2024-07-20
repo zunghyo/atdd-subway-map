@@ -29,7 +29,7 @@ public class LineSection {
 
     private Long distance;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "line_id")
     private Line line;
 
