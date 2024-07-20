@@ -36,49 +36,6 @@ public class LineSectionAcceptanceTest {
 
     /**
      * Given 지하철 노선이 주어지고
-     * When 새로운 구간을 생성할 때 새로운 구간의 상행역은 노선에 등록되어 있는 하행 종점역이 아니면
-     * Then 예외가 발생한다.
-     */
-    @DisplayName("새로운 구간의 상행역이 노선에 등록되어 있는 하행 종점이 아니면 예외발생 테스트")
-    @Test
-    void createSectionException() {
-        //given
-        ExtractableResponse<Response> 신분당선_생성_응답 = 지하철노선_생성("신분당선", "bg-red-600", 지하철역_id("신사역"), 지하철역_id("논현역"), 10L);
-        assertThat(신분당선_생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-
-        Long 생성된노선_id = responseToId(신분당선_생성_응답);
-
-        // when
-        ExtractableResponse<Response> 지하철구간_생성_응답 = 지하철구간_생성(생성된노선_id, 지하철역_id("역삼역"), 지하철역_id("신논현역"), 10L);
-
-        // then
-        assertThat(지하철구간_생성_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-
-    }
-
-    /**
-     * Given 지하철 노선이 주어지고
-     * When 새로운 구간을 생성할 때 새로운 구간의 하행역이 이미 노선에 등록되어 있으면
-     * Then 예외가 발생한다.
-     */
-    @DisplayName("새로운 구간의 하행역이 이미 노선에 등록되어 있으면 예외발생 테스트")
-    @Test
-    void createSectionException2() {
-        //given
-        ExtractableResponse<Response> 신분당선_생성_응답 = 지하철노선_생성("신분당선", "bg-red-600", 지하철역_id("신사역"), 지하철역_id("논현역"), 10L);
-        assertThat(신분당선_생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-
-        Long 생성된노선_id = responseToId(신분당선_생성_응답);
-
-        // when
-        ExtractableResponse<Response> 지하철구간_생성_응답 = 지하철구간_생성(생성된노선_id, 지하철역_id("논현역"), 지하철역_id("신사역"), 10L);
-
-        // then
-        assertThat(지하철구간_생성_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-
-    }
-    /**
-     * Given 지하철 노선이 주어지고
      * When 새로운 구간을 등록하면
      * Then 구간이 등록된다.
      */
@@ -100,47 +57,46 @@ public class LineSectionAcceptanceTest {
     }
 
     /**
-     * Given 지하철 구간이 주어지고
-     * When 지하철 구간을 삭제할 때 하행 종점역(마지막 구간)이 아닌 경우
+     * Given 지하철 노선이 주어지고
+     * When 새로운 구간을 생성할 때 새로운 구간의 상행역은 노선에 등록되어 있는 하행 종점역이 아니면
      * Then 예외가 발생한다.
      */
-    @DisplayName("삭제할 구간이 하행 종점역이 아닌 경우 예외 발생 테스트")
+    @DisplayName("새로운 구간의 상행역이 노선에 등록되어 있는 하행 종점이 아니면 예외가 발생한다.")
     @Test
-    void deleteSectionException() {
+    void createSectionException() {
         //given
         ExtractableResponse<Response> 신분당선_생성_응답 = 지하철노선_생성("신분당선", "bg-red-600", 지하철역_id("신사역"), 지하철역_id("논현역"), 10L);
         assertThat(신분당선_생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
         Long 생성된노선_id = responseToId(신분당선_생성_응답);
 
-        ExtractableResponse<Response> 지하철구간_생성_응답 = 지하철구간_생성(생성된노선_id, 지하철역_id("논현역"), 지하철역_id("신논현역"), 10L);
-        assertThat(지하철구간_생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-
         // when
-        ExtractableResponse<Response> 지하철구간_삭제_응답 = 지하철구간_삭제(생성된노선_id, 지하철역_id("논현역"));
+        ExtractableResponse<Response> 지하철구간_생성_응답 = 지하철구간_생성(생성된노선_id, 지하철역_id("역삼역"), 지하철역_id("신논현역"), 10L);
 
         // then
-        assertThat(지하철구간_삭제_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(지하철구간_생성_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
     }
 
     /**
-     * Given 지하철 구간이 주어지고
-     * When 지하철 구간을 삭제할 때 상행 종점역과 하행 종점역만 있는 경우(구간이 1개)
+     * Given 지하철 노선이 주어지고
+     * When 새로운 구간을 생성할 때 새로운 구간의 하행역이 이미 노선에 등록되어 있으면
      * Then 예외가 발생한다.
      */
-    @DisplayName("삭제할 구간이 1개인 경우 예외 발생 테스트")
+    @DisplayName("새로운 구간의 하행역이 이미 노선에 등록되어 있으면 예외가 발생한다.")
     @Test
-    void deleteSectionException2() {
+    void createSectionException2() {
         //given
         ExtractableResponse<Response> 신분당선_생성_응답 = 지하철노선_생성("신분당선", "bg-red-600", 지하철역_id("신사역"), 지하철역_id("논현역"), 10L);
         assertThat(신분당선_생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
         Long 생성된노선_id = responseToId(신분당선_생성_응답);
 
         // when
-        ExtractableResponse<Response> 지하철구간_삭제_응답 = 지하철구간_삭제(생성된노선_id, 지하철역_id("논현역"));
+        ExtractableResponse<Response> 지하철구간_생성_응답 = 지하철구간_생성(생성된노선_id, 지하철역_id("논현역"), 지하철역_id("신사역"), 10L);
 
         // then
-        assertThat(지하철구간_삭제_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(지하철구간_생성_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
 
     }
 
@@ -166,6 +122,51 @@ public class LineSectionAcceptanceTest {
         // then
         ExtractableResponse<Response> 지하철노선_조회_응답 = 지하철노선_조회(생성된노선_id);
         assertThat(responseToStationNames(지하철노선_조회_응답)).doesNotContain("신논현역");
+    }
+
+    /**
+     * Given 지하철 구간이 주어지고
+     * When 지하철 구간을 삭제할 때 하행 종점역(마지막 구간)이 아닌 경우
+     * Then 예외가 발생한다.
+     */
+    @DisplayName("삭제할 구간이 하행 종점역이 아닌 경우 예외가 발생한다.")
+    @Test
+    void deleteSectionException() {
+        //given
+        ExtractableResponse<Response> 신분당선_생성_응답 = 지하철노선_생성("신분당선", "bg-red-600", 지하철역_id("신사역"), 지하철역_id("논현역"), 10L);
+        assertThat(신분당선_생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        Long 생성된노선_id = responseToId(신분당선_생성_응답);
+
+        ExtractableResponse<Response> 지하철구간_생성_응답 = 지하철구간_생성(생성된노선_id, 지하철역_id("논현역"), 지하철역_id("신논현역"), 10L);
+        assertThat(지하철구간_생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+
+        // when
+        ExtractableResponse<Response> 지하철구간_삭제_응답 = 지하철구간_삭제(생성된노선_id, 지하철역_id("논현역"));
+
+        // then
+        assertThat(지하철구간_삭제_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+    }
+
+    /**
+     * Given 지하철 구간이 주어지고
+     * When 지하철 구간을 삭제할 때 상행 종점역과 하행 종점역만 있는 경우(구간이 1개)
+     * Then 예외가 발생한다.
+     */
+    @DisplayName("삭제할 구간이 1개인 경우 예외가 발생한다.")
+    @Test
+    void deleteSectionException2() {
+        //given
+        ExtractableResponse<Response> 신분당선_생성_응답 = 지하철노선_생성("신분당선", "bg-red-600", 지하철역_id("신사역"), 지하철역_id("논현역"), 10L);
+        assertThat(신분당선_생성_응답.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        Long 생성된노선_id = responseToId(신분당선_생성_응답);
+
+        // when
+        ExtractableResponse<Response> 지하철구간_삭제_응답 = 지하철구간_삭제(생성된노선_id, 지하철역_id("논현역"));
+
+        // then
+        assertThat(지하철구간_삭제_응답.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
     }
 
     private static Long 지하철역_생성_후_id_추출(String name) {
