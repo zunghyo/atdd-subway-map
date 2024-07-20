@@ -37,11 +37,37 @@ public class LineSections {
         if(lineSections.size() <= 1) {
             throw new SubwayException(SubwayExceptionType.CANNOT_DELETE_SINGLE_SECTION);
         }
-        Optional<Station> lastDownStation = getLastDownStation();
-        if(lastDownStation.isPresent() && !lastDownStation.get().getId().equals(stationId)) {
+        if(isDifferentFromLastDownStation(stationId)) {
             throw new SubwayException(SubwayExceptionType.CANNOT_DELETE_NON_LAST_DOWN_STATION);
         }
         lineSections.remove(lineSections.size() - 1);
+    }
+
+    private void validateUpStation(Station upStation) {
+        if (isDifferentFromLastDownStation(upStation.getId())) {
+            throw new InvalidUpStationException(upStation.getId());
+        }
+    }
+
+    private boolean isDifferentFromLastDownStation(Long stationId) {
+        Optional<Station> lastDownStation = getLastDownStation();
+        return lastDownStation.isPresent() && !lastDownStation.get().getId().equals(stationId);
+    }
+
+    private Optional<Station> getLastDownStation() {
+        Optional<LineSection> lastSection = getLastLineSection();
+        return lastSection.map(LineSection::getDownStation);
+    }
+
+    private Optional<LineSection> getLastLineSection() {
+        return lineSections.isEmpty() ? Optional.empty() : Optional.of(lineSections.get(lineSections.size() - 1));
+    }
+
+    private void validateDownStation(Station downStation) {
+        if (getStationIds().stream()
+            .anyMatch(stationId -> stationId.equals(downStation.getId()))) {
+            throw new InvalidDownStationException(downStation.getId());
+        }
     }
 
     public List<Long> getStationIds() {
@@ -51,28 +77,5 @@ public class LineSections {
                 lineSection.getDownStation().getId()))
             .distinct()
             .collect(Collectors.toList());
-    }
-
-    private Optional<LineSection> getLastLineSection() {
-        return lineSections.isEmpty() ? Optional.empty() : Optional.of(lineSections.get(lineSections.size() - 1));
-    }
-
-    private Optional<Station> getLastDownStation() {
-        Optional<LineSection> lastSection = getLastLineSection();
-        return lastSection.map(LineSection::getDownStation);
-    }
-
-    private void validateUpStation(Station upStation) {
-        Optional<Station> lastDownStation = getLastDownStation();
-        if (lastDownStation.isPresent() && !lastDownStation.get().getId().equals(upStation.getId())) {
-            throw new InvalidUpStationException(upStation.getId());
-        }
-    }
-
-    private void validateDownStation(Station downStation) {
-        if (getStationIds().stream()
-            .anyMatch(stationId -> stationId.equals(downStation.getId()))) {
-            throw new InvalidDownStationException(downStation.getId());
-        }
     }
 }
