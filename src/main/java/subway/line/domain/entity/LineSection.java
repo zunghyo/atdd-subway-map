@@ -29,7 +29,12 @@ public class LineSection {
 
     private Long distance;
 
-    public LineSection(Station upStation, Station downStation, Long distance) {
+    @ManyToOne
+    @JoinColumn(name = "line_id")
+    private Line line;
+
+    public LineSection(Line line, Station upStation, Station downStation, Long distance) {
+        this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;

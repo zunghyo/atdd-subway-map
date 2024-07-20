@@ -25,7 +25,7 @@ public class LineSectionService {
         Station upStation = stationRepository.findByIdOrThrow(sectionRequest.getUpStationId());
         Station downStation = stationRepository.findByIdOrThrow(sectionRequest.getDownStationId());
 
-        line.addSection(new LineSection(upStation, downStation, sectionRequest.getDistance()));
+        line.addSection(new LineSection(line, upStation, downStation, sectionRequest.getDistance()));
     }
 
     @Transactional
